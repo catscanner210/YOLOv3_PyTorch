@@ -12,7 +12,7 @@ Full implementation of YOLOv3 in PyTorch.
 
 ## Installation
 ##### Environment
-* pytorch >= 0.4.0
+* pytorch = 1.3.0
 * python >= 3.6.0
 ##### Get code
 ```
