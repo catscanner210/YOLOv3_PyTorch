@@ -1,11 +1,6 @@
 # YOLOv3
 Full implementation of YOLOv3 in PyTorch.
-a little test
-why?
-why222
-why333
-why444
-why 555
+
 ## Overview
 #### YOLOv3: An Incremental Improvement
 [[Paper]](https://pjreddie.com/media/files/papers/YOLOv3.pdf)   
@@ -18,7 +13,7 @@ why 555
 ## Installation
 ##### Environment
 * pytorch = 1.3.0
-* python >= 3.6.0
+* python = 3.7.0
 ##### Get code
 ```
 git clone https://github.com/BobLiu20/YOLOv3_PyTorch.git
