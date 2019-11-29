@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from collections import OrderedDict
 
-from .backbone import backbone_fn
+from backbone import backbone_fn
 
 
 class ModelMain(nn.Module):
@@ -15,8 +15,10 @@ class ModelMain(nn.Module):
         _backbone_fn = backbone_fn[self.model_params["backbone_name"]]
         self.backbone = _backbone_fn(self.model_params["backbone_pretrained"])
         _out_filters = self.backbone.layers_out_filters
+        print(_out_filters)
         #  embedding0
         final_out_filter0 = len(config["yolo"]["anchors"][0]) * (5 + config["yolo"]["classes"])
+        print(final_out_filter0)
         self.embedding0 = self._make_embedding([512, 1024], _out_filters[-1], final_out_filter0)
         #  embedding1
         final_out_filter1 = len(config["yolo"]["anchors"][1]) * (5 + config["yolo"]["classes"])
@@ -150,10 +152,20 @@ class ModelMain(nn.Module):
         print("Total ptr = ", ptr)
         print("real size = ", weights.shape)
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 
 if __name__ == "__main__":
-    config = {"model_params": {"backbone_name": "darknet_53"}}
+    config = {"model_params": {"backbone_name": "darknet_53","backbone_pretrained":"../weights/darknet53_weights_pytorch.pth"},
+            "yolo": {
+            "anchors": [[[116, 90], [156, 198], [373, 326]],
+                    [[30, 61], [62, 45], [59, 119]],
+                    [[10, 13], [16, 30], [33, 23]]],
+            "classes": 80,
+            }
+            }
     m = ModelMain(config)
+    # m = m.to(device)
     x = torch.randn(1, 3, 416, 416)
     y0, y1, y2 = m(x)
     print(y0.size())
