@@ -16,9 +16,14 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.ticker import NullLocator
+logging.getLogger('matplotlib.font_manager').disabled = True
+
 
 import torch
 import torch.nn as nn
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 
 
 MY_DIRNAME = os.path.dirname(os.path.abspath(__file__))
@@ -39,7 +44,8 @@ def test(config):
 
     # Set data parallel
     net = nn.DataParallel(net)
-    net = net.cuda()
+    # net = net.cuda()
+    net = net.to(device)
 
     # Restore pretrain model
     if config["pretrain_snapshot"]:
@@ -83,7 +89,9 @@ def test(config):
             image = image.astype(np.float32)
             images.append(image)
         images = np.asarray(images)
-        images = torch.from_numpy(images).cuda()
+        # images = torch.from_numpy(images).cuda()
+        images = torch.from_numpy(images).to(device)
+
         # inference
         with torch.no_grad():
             outputs = net(images)
