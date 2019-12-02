@@ -22,6 +22,7 @@ sys.path.insert(0, os.path.join(MY_DIRNAME, '..'))
 from nets.model_main import ModelMain
 from nets.yolo_loss import YOLOLoss
 from common.coco_dataset import COCODataset
+
 logging.getLogger('matplotlib.font_manager').disabled = True
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 

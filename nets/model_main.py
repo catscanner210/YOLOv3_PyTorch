@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from collections import OrderedDict
 
-from backbone import backbone_fn
+from .backbone import backbone_fn
 
 
 class ModelMain(nn.Module):
