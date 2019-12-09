@@ -81,7 +81,7 @@ def train(config):
                                                          (config["img_w"], config["img_h"]),
                                                          is_training=True),
                                              batch_size=config["batch_size"],
-                                             shuffle=True, num_workers=32, pin_memory=True)
+                                             shuffle=True, num_workers=0, pin_memory=True)
 
     # Start the training loop
     logging.info("Start training.")

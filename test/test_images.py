@@ -45,6 +45,13 @@ def test(config):
     # net = net.cuda()
     net = net.to(device)
 
+    import torch.onnx
+    # 按照输入格式，设计随机输入
+    dummy_input =torch.randn(1, 3, 416, 416).to(device)   
+    # 导出模型
+    torch.onnx.export(net.module,dummy_input, 'darknet.onnx',verbose=True)
+
+    exit()
     # Restore pretrain model
     if config["pretrain_snapshot"]:
         logging.info("load checkpoint from {}".format(config["pretrain_snapshot"]))

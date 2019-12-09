@@ -41,6 +41,7 @@ class DarkNet(nn.Module):
         self.bn1 = nn.BatchNorm2d(self.inplanes)
         self.relu1 = nn.LeakyReLU(0.1)
 
+        # layers = [1, 2, 8, 8, 4]
         self.layer1 = self._make_layer([32, 64], layers[0])
         self.layer2 = self._make_layer([64, 128], layers[1])
         self.layer3 = self._make_layer([128, 256], layers[2])
