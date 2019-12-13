@@ -6,3 +6,5 @@ coco
 output
 myworking
 *.onnx
+featuremaps
+inputs
