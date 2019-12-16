@@ -12,8 +12,8 @@ Full implementation of YOLOv3 in PyTorch.
 
 ## Installation
 ##### Environment
-* pytorch = 1.3.0
-* python = 3.7.0
+* pytorch = 1.3.1
+* python = 3.7.5
 ##### Get code
 ```
 git clone https://github.com/BobLiu20/YOLOv3_PyTorch.git

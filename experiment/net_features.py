@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import os,glob,shutil
 
-
 def imshow(tensor, title=None):
     image = tensor.cpu().clone()  # we clone the tensor to not do changes on it
     image = image.squeeze(0)  # remove the fake batch dimension
@@ -71,13 +70,9 @@ def export_onnx(model,model_name,w=416,h=416):
     # 导出模型
     torch.onnx.export(net,dummy_input, model_name, verbose=True)
 
-net = torch.hub.load('pytorch/vision:v0.4.2', 'resnet50', pretrained=True)
-net.eval()
-print(net)
-
 def concat_tensor(tensors_tuple):
-    image1 = read_img_cv2()
-    image2 = read_img_cv2()
+    image1 = read_img_cv2('')
+    image2 = read_img_cv2('')
     batch = torch.cat((image1,image2),0)
     print(batch.size())
     output = net(batch)
@@ -108,15 +103,11 @@ def print_each_layer(net):
     for layer in list(net.children()):
         print(layer)
 
-layer = "layer1"
-sub_net = MyResNet50(net,layer)
-sub_net.eval()
-
 # img_path = '2.jpeg'
 # output = sub_net(read_img(img_path))
 # print(output.size())
 
-def featuremaps_of_one_image(output,img_path):
+def featuremaps_of_one_image(output,img_path,layer):
     root = './featuremaps/{}_{}'.format(layer,img_path)
     if(os.path.exists(root)):
         shutil.rmtree(root)
@@ -127,14 +118,23 @@ def featuremaps_of_one_image(output,img_path):
         # 
         imsave(output[:,i:i+1,:,:],root,'{}.jpg'.format(i))
 
-def featuremaps_of_folder(folder_path):
+def featuremaps_of_folder(net,folder_path,layer):
     for img in glob.glob(folder_path):
         print(img)
-        output = sub_net(read_img(img))
-        featuremaps_of_one_image(output,os.path.basename(img))
-
-featuremaps_of_folder('./inputs/*')
+        output = net(read_img(img))
+        featuremaps_of_one_image(output,os.path.basename(img),layer)
 
 
+def get_multilayer_features(layers,resnet):
+    for layer in layers:
+        net = MyResNet50(resnet,layer)
+        net.eval()
+        featuremaps_of_folder(net,'../inputs/*',layer)
 
+
+# layers = ['layer1','layer2','layer3']
+# resnet = torch.hub.load('pytorch/vision:v0.4.2', 'resnet50', pretrained=True)
+# resnet.eval()
+# print(resnet)
+# get_multilayer_features(layers,resnet)
 
