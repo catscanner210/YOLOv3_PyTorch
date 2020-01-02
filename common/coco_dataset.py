@@ -6,8 +6,8 @@ import cv2
 import torch
 from torch.utils.data import Dataset
 
-from common import data_transforms
-# import data_transforms
+# from common import data_transforms
+import data_transforms
 
 class COCODataset(Dataset):
     def __init__(self, list_path, img_size, is_training, is_debug=False):
@@ -25,20 +25,21 @@ class COCODataset(Dataset):
                 logging.info("no label found. skip it: {}".format(path))
         logging.info("Total images: {}".format(len(self.img_files)))
         self.img_size = img_size  # (w, h)
-        self.max_objects = 50
+        self.max_objects = 200
         self.is_debug = is_debug
-        print(len(self.label_files))
+        # print(len(self.label_files))
         #  transforms and augmentation
+        #  the order cannot be switched cause boundingbox is augmented with the augmentation
         self.transforms = data_transforms.Compose()
+        self.transforms.add(data_transforms.KeepAspect())
+        self.transforms.add(data_transforms.ResizeImage(self.img_size))
         if is_training:
             self.transforms.add(data_transforms.ImageBaseAug())
-        # self.transforms.add(data_transforms.KeepAspect())
-        self.transforms.add(data_transforms.ResizeImage(self.img_size))
         self.transforms.add(data_transforms.ToTensor(self.max_objects, self.is_debug))
 
     def __getitem__(self, index):
         img_path = self.img_files[index % len(self.img_files)].rstrip()
-        img_path = img_path
+        # img_path = img_path
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         if img is None:
             raise Exception("Read image error: {}".format(img_path))
@@ -46,7 +47,7 @@ class COCODataset(Dataset):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         label_path = self.label_files[index % len(self.img_files)].rstrip()
-        label_path = label_path 
+        # label_path = label_path 
         if os.path.exists(label_path):
             labels = np.loadtxt(label_path).reshape(-1, 5)
         else:
@@ -66,10 +67,10 @@ class COCODataset(Dataset):
 
 #  use for test dataloader
 if __name__ == "__main__":
-    dataloader = torch.utils.data.DataLoader(COCODataset("coco/trainvalno5k.part",
+    dataloader = torch.utils.data.DataLoader(COCODataset("../data/coco/trainvalno5k.part",
                                                          (416, 416), True, is_debug=True),
-                                             batch_size=2,
-                                             shuffle=False, num_workers=1, pin_memory=True)
+                                             batch_size=16,
+                                             shuffle=True, num_workers=1, pin_memory=True)
     for step, sample in enumerate(dataloader):
         # print(sample)
         for i, (image, label) in enumerate(zip(sample['image'], sample['label'])):
@@ -84,7 +85,8 @@ if __name__ == "__main__":
                 y2 = int((l[2] + l[4] / 2) * h)
                 cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255))
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-            print(image.shape)
+            # print(image.shape)
             cv2.imwrite("step{}_{}.jpg".format(step, i), image)
-        # only one batch
-        break
+            # print(i)
+        # print("step:{}".format(step))
+        break # only one batch
