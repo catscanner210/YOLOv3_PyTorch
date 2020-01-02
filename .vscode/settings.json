@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/Users/kc/anaconda3/envs/torch/bin/python"
+    "python.pythonPath": "/home/kc/anaconda3/envs/torch/bin/python",
+    "python.linting.enabled": false
 }

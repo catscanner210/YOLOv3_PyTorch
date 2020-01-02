@@ -103,6 +103,7 @@ def train(config):
                 for j, l in enumerate(_loss_item):
                     losses[j].append(l)
             losses = [sum(l) for l in losses]
+            # print(losses)
             loss = losses[0]
             loss.backward()
             optimizer.step()

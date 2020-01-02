@@ -7,6 +7,10 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import os,glob,shutil
 
+# device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cpu')
+
+
 def imshow(tensor, title=None):
     image = tensor.cpu().clone()  # we clone the tensor to not do changes on it
     image = image.squeeze(0)  # remove the fake batch dimension
@@ -108,33 +112,33 @@ def print_each_layer(net):
 # print(output.size())
 
 def featuremaps_of_one_image(output,img_path,layer):
-    root = './featuremaps/{}_{}'.format(layer,img_path)
+    root = '../featuremaps/{}_{}'.format(layer,img_path)
+    print("output folder:{}".format(root))
     if(os.path.exists(root)):
+        # print("root:{}  exist!".format(root))
         shutil.rmtree(root)
     os.makedirs(root)
     feature_layers = output.size()[1]
     print('featurelayers:{}'.format(feature_layers))
     for i in range(feature_layers):
-        # 
         imsave(output[:,i:i+1,:,:],root,'{}.jpg'.format(i))
 
 def featuremaps_of_folder(net,folder_path,layer):
     for img in glob.glob(folder_path):
-        print(img)
-        output = net(read_img(img))
+        # print(img)
+        output = net(read_img(img).to(device))
         featuremaps_of_one_image(output,os.path.basename(img),layer)
-
 
 def get_multilayer_features(layers,resnet):
     for layer in layers:
-        net = MyResNet50(resnet,layer)
+        net = MyResNet50(resnet,layer).to(device)
         net.eval()
         featuremaps_of_folder(net,'../inputs/*',layer)
 
 
-# layers = ['layer1','layer2','layer3']
-# resnet = torch.hub.load('pytorch/vision:v0.4.2', 'resnet50', pretrained=True)
-# resnet.eval()
+layers = ['layer1']
+resnet = torch.hub.load('pytorch/vision:v0.4.2', 'resnet50', pretrained=True)
+resnet.eval()
 # print(resnet)
-# get_multilayer_features(layers,resnet)
+get_multilayer_features(layers,resnet)
 

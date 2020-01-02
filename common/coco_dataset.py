@@ -14,10 +14,12 @@ class COCODataset(Dataset):
         self.img_files = []
         self.label_files = []
         for path in open(list_path, 'r'):
+            print("kkk {}".format(path))
+            path = '../data/coco' + path
             label_path = path.replace('images', 'labels').replace('.png', '.txt').replace(
                 '.jpg', '.txt').strip()
             # print(label_path)
-            if os.path.isfile('D:/DATASETS/coco_data_2014'+label_path):
+            if os.path.isfile(label_path):
                 # print(path)
                 self.img_files.append(path)
                 self.label_files.append(label_path)
@@ -39,7 +41,7 @@ class COCODataset(Dataset):
 
     def __getitem__(self, index):
         img_path = self.img_files[index % len(self.img_files)].rstrip()
-        img_path = 'D:/DATASETS/coco_data_2014' + img_path
+        img_path = img_path
         img = cv2.imread(img_path, cv2.IMREAD_COLOR)
         if img is None:
             raise Exception("Read image error: {}".format(img_path))
@@ -47,7 +49,7 @@ class COCODataset(Dataset):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
         label_path = self.label_files[index % len(self.img_files)].rstrip()
-        label_path = 'D:/DATASETS/coco_data_2014' + label_path 
+        label_path = label_path 
         if os.path.exists(label_path):
             labels = np.loadtxt(label_path).reshape(-1, 5)
         else:
@@ -67,7 +69,7 @@ class COCODataset(Dataset):
 
 #  use for test dataloader
 if __name__ == "__main__":
-    dataloader = torch.utils.data.DataLoader(COCODataset("D:/DATASETS/coco_data_2014/trainvalno5k.part",
+    dataloader = torch.utils.data.DataLoader(COCODataset("coco/trainvalno5k.part",
                                                          (416, 416), True, is_debug=True),
                                              batch_size=2,
                                              shuffle=False, num_workers=1, pin_memory=True)

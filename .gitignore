@@ -8,3 +8,8 @@ myworking
 *.onnx
 featuremaps
 inputs
+inputs2
+ocrs
+cannys
+.vscode
+
