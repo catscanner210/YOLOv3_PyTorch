@@ -6,8 +6,8 @@ import cv2
 import torch
 from torch.utils.data import Dataset
 
-# from common import data_transforms
-import data_transforms
+from common import data_transforms
+# import data_transforms
 
 class COCODataset(Dataset):
     def __init__(self, list_path, img_size, is_training, is_debug=False):

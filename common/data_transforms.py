@@ -37,7 +37,8 @@ class ToTensor(object):
             image /= 255.0
             image = np.transpose(image, (2, 0, 1))
             image = image.astype(np.float32)
-
+        if len(labels) == 0 :
+            labels = np.zeros((1,5),np.float32)
         filled_labels = np.zeros((self.max_objects, 5), np.float32)
         filled_labels[range(len(labels))[:self.max_objects]] = labels[:self.max_objects]
         return {'image': torch.from_numpy(image.copy()), 'label': torch.from_numpy(filled_labels.copy())}
