@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-img = cv2.imread('C:/Users/KC/Desktop/YOLOv3_PyTorch/experiment/1.jpg') # 1008*756 w*h
+img = cv2.imread('./1.jpg') # 1008*756 w*h
 
 rows, cols = img.shape[:2]
 # 原图中书本的四个角点(x,y)

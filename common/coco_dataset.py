@@ -14,13 +14,10 @@ class COCODataset(Dataset):
         self.img_files = []
         self.label_files = []
         for path in open(list_path, 'r'):
-            print("kkk {}".format(path))
             path = '../data/coco' + path
             label_path = path.replace('images', 'labels').replace('.png', '.txt').replace(
                 '.jpg', '.txt').strip()
-            # print(label_path)
             if os.path.isfile(label_path):
-                # print(path)
                 self.img_files.append(path)
                 self.label_files.append(label_path)
             else:
