@@ -5,9 +5,10 @@ import cv2
 
 import torch
 from torch.utils.data import Dataset
+import matplotlib.pyplot as plt
 
-from common import data_transforms
-# import data_transforms
+# from common import data_transforms
+import data_transforms
 
 class COCODataset(Dataset):
     def __init__(self, list_path, img_size, is_training, is_debug=False):
@@ -66,10 +67,11 @@ class COCODataset(Dataset):
 
 
 #  use for test dataloader
+plt.ion()
 if __name__ == "__main__":
     dataloader = torch.utils.data.DataLoader(COCODataset("../data/coco/trainvalno5k.part",
                                                          (416, 416), True, is_debug=True),
-                                             batch_size=16,
+                                             batch_size=32,
                                              shuffle=True, num_workers=1, pin_memory=True)
     for step, sample in enumerate(dataloader):
         # print(sample)
@@ -85,8 +87,12 @@ if __name__ == "__main__":
                 y2 = int((l[2] + l[4] / 2) * h)
                 cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255))
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-            # print(image.shape)
-            cv2.imwrite("step{}_{}.jpg".format(step, i), image)
+            print("step{}_{}.jpg".format(step, i))
+            plt.imshow(image)
+            # plt.pause(0.001)
+            input("Press Enter to continue...")
+            plt.clf()
+            # cv2.imwrite("step{}_{}.jpg".format(step, i), image)
             # print(i)
         # print("step:{}".format(step))
-        break # only one batch
+        # break # only one batch
