@@ -123,7 +123,7 @@ class ImageBaseAug(object):
                                      shear=(-16, 16)),
                                      ),
                 sometimes(iaa.PerspectiveTransform(scale=(0.01, 0.15))),
-                sometimes(iaa.Fliplr(0.5)),
+                # sometimes(iaa.Fliplr(0.5)),
                 # iaa.Flipud(0.5),
                 ],
                 random_order=True
